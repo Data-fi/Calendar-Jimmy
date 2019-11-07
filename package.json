@@ -8,7 +8,9 @@
     "build": "webpack -w",
     "server": "nodemon ./server/server.js",
     "db": "mysql -u root < ./db/schema.sql",
-    "seed-data": "node ./db/seed.js",
+    "mongo-csv": "node ./db/db-Jimmy/mongoCSV2.js",
+    "mongo-json": "node ./db/db-Jimmy/mongoJSON.js",
+    "postgres-csv": "node ./db/db-Jimmy/postgresCSV.js",
     "test:watch": "jest --watch"
   },
   "repository": {
