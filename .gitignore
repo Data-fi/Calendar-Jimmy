@@ -4,5 +4,6 @@ coverage/
 .eslintrc.json
 .prettierrrc
 client/src/day_org.jsx
-db/db-Jimmy/jimmy-data.csv
+db/db-Jimmy/jimmy-post.csv
+db/db-Jimmy/jimmy-post2.csv
 db/db-Jimmy/jimmy-mongo.json

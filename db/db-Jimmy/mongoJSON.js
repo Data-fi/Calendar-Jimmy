@@ -1,69 +1,90 @@
-// file system module to perform file operations
+const faker = require('faker');
 const fs = require('fs');
-var faker = require('faker');
 
-// json data
-var jsonData = [];
+const writeUsers = fs.createWriteStream('./db/db-jimmy/jimmy-mongo.json');
 
-var generate = () => {
-    var fakerdata = [];
-    var counter = 0;
-    var resCounter = 1;    
-    for (var i=0; i < 500000; i++) {
-        if (i % 10000 == 0){console.log("Progress: ", i/500000*100)}
-        var minDate = faker.random.number({min:1, max:100});
+function addDays(date, days) {
+    var result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+  }
+
+var generateReservations = () => {
+    var reservationsArray =[]
+    var resCounter=1
+    for (var i = 0; i < faker.random.number({min:1, max:7}); i++){
         var startDate = faker.date.recent();
-        var endDate = faker.date.recent();
-        var numBeds = faker.random.number({min:1, max:5});
-        var bedType = faker.lorem.word();
-        var maxDays = faker.random.number({min:7, max:14});
-        fakerdata.push({
-            listing_id: counter++,
-            description: faker.lorem.word(),
-            city: faker.address.city(),
-            discount_rate: faker.random.number({min:1, max:100}),
-            discount_measure: faker.random.number({min:1, max:100}),
-            bedrooms: {
-                numBeds: numBeds,
-                bedType: bedType,
-            },
-            minMaxDates: {
-                sunday: minDate,
-                monday: minDate,
-                tuesday: minDate,
-                wednesday: minDate,
-                thursday: minDate,
-                friday: minDate,
-                saturday: minDate,
-                max_days: maxDays,
-            },
-            reservations: [{
-                reservation_id: resCounter++,
-                start: startDate,
-                end: endDate,
-            }],
-          })
+        var endDate = addDays(startDate, faker.random.number({min:1, max:7}))
+        reservationsArray.push({
+            reservation_id: resCounter++,
+            start: startDate,
+            end: endDate,
+      })
     }
-    return fakerdata;
-}
+    return reservationsArray;
+  };
 
-var jsonData = generate();
-// console.log(jsonData)
+function generate(writer, encoding, callback) {
+  let seed = 10000000;
+  let id = 0;
+  //setup begining [
+  writer.write("[", encoding);
 
- 
-// stringify JSON Object
-var jsonContent = JSON.stringify(jsonData);
-// console.log(jsonContent);
-
-// // parse json
-// var jsonObj = JSON.parse(jsonData);
-// console.log(jsonObj);
-
-fs.writeFile("./db/db-jimmy/jimmy-mongo.json", jsonContent, 'utf8', function (err) {
-    if (err) {
-        console.log("An error occured while writing JSON Object to File.");
-        return console.log(err);
+    function write() {
+      let ok = true;
+      do {
+        seed -= 1;
+        id += 1;
+            var fakerdata = "";
+            if (id % 100000 === 0) {
+                console.log(Math.floor((id / 10000000) * 100) + '%');
+              }
+            var minDate = faker.random.number({min:0, max:2});
+            var numBeds = faker.random.number({min:1, max:5});
+            var bedType = faker.lorem.word();
+            var maxDays = faker.random.number({min:7, max:14});
+            fakerdata ={
+                listing_id: id,
+                description: faker.lorem.words(),
+                city: faker.address.city(),
+                discount_rate: faker.random.number({min:1, max:75}),
+                discount_measure: maxDays,
+                bedrooms: {
+                    numBeds: numBeds,
+                    bedType: bedType,
+                },
+                minMaxDates: {
+                    sunday: minDate,
+                    monday: minDate,
+                    tuesday: minDate,
+                    wednesday: minDate,
+                    thursday: minDate,
+                    friday: minDate,
+                    saturday: minDate,
+                    max_days: maxDays,
+                },
+                reservations: generateReservations()
+              }
+        var data = JSON.stringify(fakerdata);
+        if (seed === 0) {
+          data += "]";
+          writer.write(data, encoding, callback);
+        } else {
+  // see if we should continue, or wait
+  // don't pass the callback, because we're not done yet.
+    data += ",";
+    ok = writer.write(data, encoding);
+        }
+      } while (seed > 0 && ok);
+      if (seed > 0) {
+  // had to stop early!
+  // write some more once it drains
+        writer.once('drain', write);
+      }
     }
- 
-    console.log("JSON file has been saved.");
-});
+  write()
+  }
+
+generate(writeUsers, 'utf-8', () => {
+    writeUsers.end();
+  });

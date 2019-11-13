@@ -8,9 +8,11 @@
     "build": "webpack -w",
     "server": "nodemon ./server/server.js",
     "db": "mysql -u root < ./db/schema.sql",
-    "mongo-csv": "node ./db/db-Jimmy/mongoCSV2.js",
-    "mongo-json": "node ./db/db-Jimmy/mongoJSON.js",
-    "postgres-csv": "node ./db/db-Jimmy/postgresCSV.js",
+    "mongo-json": "node --max-old-space-size=8192 ./db/db-Jimmy/mongoJSON.js",
+    "mongo-seed": "mongoimport -d calendar -c calendar --type json --jsonArray --numInsertionWorkers 2 --file ./db/db-Jimmy/jimmy-mongo.json",
+    "postgres-csv": "node --max-old-space-size=8192 ./db/db-Jimmy/postgresCSV.js",   
+    "postgres-create": "createdb calendar",
+    "postgres-schema": "psql -f ./db/db-Jimmy/postgresSchema.sql -p 5432 -U jimmy calendar",
     "test:watch": "jest --watch"
   },
   "repository": {
