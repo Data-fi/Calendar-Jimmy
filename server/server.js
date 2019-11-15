@@ -52,11 +52,23 @@ function getStuff(listing_id, cb) {
   calendar.find({ listing_id }).exec(cb);
 }
 
+function sendStuff(stuff, cb) {
+  calendar.post({ city: "Cat"}).exec(cb);
+}
+
 app.get('/api/:listing_id', (req, res) => {
   getStuff(req.params.listing_id, (err, result) => {
     // console.log(result);
     res.send(result);
   });
 });
+
+app.post('/', function (req, res) {
+  var data = generatePost();
+  sendStuff(stuff, (err, result) => {
+    // console.log(result);
+  });
+  res.send('POST request to the homepage')
+})
 
 app.listen(port, () => console.log(`Node is listening on port ${port}!`));
