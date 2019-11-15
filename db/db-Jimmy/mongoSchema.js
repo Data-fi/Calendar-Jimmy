@@ -28,9 +28,9 @@ var calendarSchema = new Schema({
     }],
   });
 
-  module.exports = mongoose.model('calendar', calendarSchema);
+  module.exports = mongoose.model('calendars', calendarSchema);
 
-//Copy of inserts for deliverable
+  //Copy of inserts for deliverable
 // db.calendar.find({}, {"listing_id":1}).sort({"listing_id":-1}).limit(1)
 // db.calendar.insert({
 //     listing_id: 10000001,

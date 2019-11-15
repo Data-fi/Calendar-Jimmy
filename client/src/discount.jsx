@@ -2,7 +2,7 @@ import React from 'react';
 import styles from '../styles/discount.css';
 
 function discount(props) {
-  const rate = Math.floor(props.rate * 100);
+  const rate = Math.floor(props.rate);
   const { measure } = props;
   const discountOffer = `This host offers ${rate}% off if you stay for ${measure} days.`;
   return (

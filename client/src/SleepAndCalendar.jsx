@@ -149,14 +149,23 @@ class SleepAndCalendar extends React.Component {
     axios
       .get(`http://localhost:3004/api/${lastSegment}`)
       .then(res => {
+        console.log("Response Data",res.data[0]);
+        console.log("Listing_ID",res.data[0].listing_id);
+        console.log("Description: ", res.data[0].description);
+        console.log("City: ",res.data[0].city);
+        console.log("Discount Rate:", res.data[0].discount_rate);
+        console.log("Discount Measure:", res.data[0].discount_measure);
+        console.log("Bedrooms: ",res.data[0].bedrooms);
+        console.log("Dates:", res.data[0].minMaxDates);
+        console.log("Reservations:", res.data[0].reservations);
         this.setState({
-          bookedDates: new Set(res.data.bookedDates),
-          dateRestrictions: res.data.dateRestrictions,
-          discount_measure: res.data.discount_measure,
-          discount_rate: res.data.discount_rate,
-          rooms: res.data.bedrooms,
-          name: res.data.short_desc,
-          city: res.data.city
+          // bookedDates: new Set(res.data[0].bookedDates),
+          // dateRestrictions: res.data[0].minMaxDates,
+          discount_measure: res.data[0].discount_measure,
+          discount_rate: res.data[0].discount_rate
+          // rooms: res.data[0].bedrooms.numBeds,
+          // name: res.data[0].description,
+          // city: res.data[0].city
         });
       })
       .catch(err => {
